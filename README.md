@@ -128,14 +128,6 @@
 - Service Worker (PWA)
 - Web Speech API (голосовой ввод)
 
-## Структура проекта
-sitwithit/
-├── index.html          # Главный файл (все в одном)
-├── manifest.json       # PWA-манифест
-├── service-worker.js   # Service Worker
-├── icon-192.png        # Иконка 192x192
-└── icon-512.png        # Иконка 512x512
-
 ## Браузерная совместимость
 - Google Chrome (рекомендуется)
 - Microsoft Edge
