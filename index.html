@@ -454,6 +454,13 @@
     flex-direction: column;
     gap: 10px;
   }
+  .category-section { margin: 0 0 18px; }
+  .category-section-title { margin: 4px 0 10px; padding: 0 2px 8px; border-bottom: 1px solid var(--border); color: var(--text-strong); font: 600 16px 'Lora', Georgia, serif; letter-spacing: .01em; }
+  .category-section-grid { display: flex; flex-direction: column; gap: 10px; }
+  @media (min-width: 900px) {
+    #app[data-layout="desktop"] .cat-grid { display: flex; flex-direction: column; gap: 16px; }
+    #app[data-layout="desktop"] .category-section-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  }
   .cat-card {
     display: flex;
     align-items: center;
@@ -1323,7 +1330,8 @@
   }
   @media (min-width: 900px) {
     #app[data-layout="desktop"] { max-width: 960px; }
-    #app[data-layout="desktop"] .cat-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    #app[data-layout="desktop"] .cat-grid { display: flex; flex-direction: column; gap: 16px; }
+    #app[data-layout="desktop"] .category-section-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
   }
 
   /* --- Список вопросов -------------------------------------- */
@@ -1869,7 +1877,7 @@
 
 <script>
 // ============================================================
-// ВСЕ КАТЕГОРИИ (28 философских направлений)
+// ВСЕ КАТЕГОРИИ (40 философских направлений)
 // ============================================================
 const ALL_CATEGORIES = [
   { id: 'existence', color: '#8B7B6B', icon: '◎', label: 'Бытие и существование' },
@@ -1905,7 +1913,24 @@ const ALL_CATEGORIES = [
   { id: 'media', color: '#8A6D91', icon: '▣', label: 'Информация, медиа и общественное мнение' },
   { id: 'urban', color: '#7A827C', icon: '⌂', label: 'Город, пространство и повседневность' },
   { id: 'inequality', color: '#A17A61', icon: '⇵', label: 'Неравенство и социальные возможности' },
-  { id: 'games', color: '#6F78A0', icon: '◇', label: 'Игра, соревнование и правила' }
+  { id: 'games', color: '#6F78A0', icon: '◇', label: 'Игра, соревнование и правила' },
+  { id: 'friendship', color: '#688A83', icon: '♧', label: 'Дружба, доверие и солидарность' },
+  { id: 'risk', color: '#9A7957', icon: '⚄', label: 'Риск, случайность и неопределённость' },
+  { id: 'privacy', color: '#7B7198', icon: '▣', label: 'Частная жизнь, границы и достоинство' },
+  { id: 'consumption', color: '#A17A61', icon: '◇', label: 'Потребление, достаток и материальные ценности' },
+  { id: 'future', color: '#5F8198', icon: '✧', label: 'Будущее цивилизации и межпоколенческий выбор' },
+  { id: 'guilt', color: '#8B6D78', icon: '§', label: 'Вина, прощение и восстановление справедливости' }
+];
+
+
+// Группировка категорий по крупным философским темам.
+const CATEGORY_SECTIONS = [
+  { title: 'Бытие, знание и мышление', ids: ['existence','knowledge','logic','science','experiments','time','history','risk'] },
+  { title: 'Личность, чувства и отношения', ids: ['consciousness','identity','emotions','happiness','meaning','love','friendship','death','freedom','privacy'] },
+  { title: 'Этика, общество и справедливость', ids: ['ethics','society','justice','politics','law','peace','inequality','guilt','religion'] },
+  { title: 'Культура, образование и творчество', ids: ['culture','education','language','art','games'] },
+  { title: 'Природа, тело и технологии', ids: ['nature','bioethics','technology','media','future'] },
+  { title: 'Экономика и повседневная жизнь', ids: ['work','urban','consumption'] }
 ];
 
 // ============================================================
@@ -2021,7 +2046,7 @@ function getDailyQuote() {
 }
 
 // ============================================================
-// ВОПРОСЫ (34 категории × 30 = 1020 авторских вопросов)
+// ВОПРОСЫ (40 категорий × 30 = 1200 авторских вопросов)
 // ============================================================
 const QUESTIONS = [
   { id:'ex01', category:'existence', ru:"Что значит существовать: быть частью мира или осознавать своё присутствие в нём?" },
@@ -3044,7 +3069,187 @@ const QUESTIONS = [
   { id: "ga27", category: "games", ru: "Что важнее в многопользовательской игре: свобода действий или безопасность сообщества?" },
   { id: "ga28", category: "games", ru: "Должны ли профессиональные игроки соблюдать те же этические стандарты, что и спортсмены?" },
   { id: "ga29", category: "games", ru: "Может ли игра научить сотрудничеству, если её главная цель — победить соперника?" },
-  { id: "ga30", category: "games", ru: "Когда стремление к игровому прогрессу перестаёт быть развлечением и становится обязанностью?" }
+  { id: "ga30", category: "games", ru: "Когда стремление к игровому прогрессу перестаёт быть развлечением и становится обязанностью?" },
+  { id: 'frd01', category: 'friendship', ru: "Что отличает дружбу от приятного общения?" },
+  { id: 'frd02', category: 'friendship', ru: "Может ли дружба сохраняться без регулярного контакта?" },
+  { id: 'frd03', category: 'friendship', ru: "Обязан ли друг всегда говорить неприятную правду?" },
+  { id: 'frd04', category: 'friendship', ru: "Можно ли считать дружбу равной, если один человек постоянно отдаёт больше другого?" },
+  { id: 'frd05', category: 'friendship', ru: "Где проходит граница между верностью другу и соучастием в его ошибке?" },
+  { id: 'frd06', category: 'friendship', ru: "Может ли соперничество укреплять дружбу?" },
+  { id: 'frd07', category: 'friendship', ru: "Должны ли друзья разделять ценности, чтобы доверять друг другу?" },
+  { id: 'frd08', category: 'friendship', ru: "Можно ли восстановить дружбу после серьёзного предательства?" },
+  { id: 'frd09', category: 'friendship', ru: "Что важнее для дружбы: общая история или взаимное понимание?" },
+  { id: 'frd10', category: 'friendship', ru: "Может ли человек быть хорошим другом, но плохим знакомым для остальных?" },
+  { id: 'frd11', category: 'friendship', ru: "Обязательно ли дружба должна быть взаимной в одинаковой степени?" },
+  { id: 'frd12', category: 'friendship', ru: "Как понять, что поддержка друга превращается в зависимость?" },
+  { id: 'frd13', category: 'friendship', ru: "Есть ли у дружбы моральные обязательства, похожие на семейные?" },
+  { id: 'frd14', category: 'friendship', ru: "Можно ли дружить с человеком, чьи поступки противоречат твоим принципам?" },
+  { id: 'frd15', category: 'friendship', ru: "Должен ли друг вмешиваться, если видит, что другой разрушает собственную жизнь?" },
+  { id: 'frd16', category: 'friendship', ru: "Почему иногда легче довериться незнакомцу, чем близкому человеку?" },
+  { id: 'frd17', category: 'friendship', ru: "Может ли молчаливое присутствие быть полноценной поддержкой?" },
+  { id: 'frd18', category: 'friendship', ru: "Насколько дружба зависит от равенства социального положения?" },
+  { id: 'frd19', category: 'friendship', ru: "Может ли дружба между поколениями быть свободной от покровительства?" },
+  { id: 'frd20', category: 'friendship', ru: "Когда прекращение дружбы является честнее попытки её сохранить?" },
+  { id: 'frd21', category: 'friendship', ru: "Должны ли друзья делить расходы строго поровну?" },
+  { id: 'frd22', category: 'friendship', ru: "Можно ли требовать от друга конфиденциальности в любой ситуации?" },
+  { id: 'frd23', category: 'friendship', ru: "Что сильнее разрушает доверие: ложь или умолчание?" },
+  { id: 'frd24', category: 'friendship', ru: "Может ли коллективная солидарность существовать без личной симпатии?" },
+  { id: 'frd25', category: 'friendship', ru: "Обязаны ли участники сообщества помогать тем, кого не знают лично?" },
+  { id: 'frd26', category: 'friendship', ru: "Когда групповая лояльность превращается в давление на несогласных?" },
+  { id: 'frd27', category: 'friendship', ru: "Может ли взаимопомощь быть устойчивой без формальных правил?" },
+  { id: 'frd28', category: 'friendship', ru: "Что общество теряет, когда люди перестают доверять незнакомцам?" },
+  { id: 'frd29', category: 'friendship', ru: "Насколько справедливо ожидать благодарности за бескорыстную помощь?" },
+  { id: 'frd30', category: 'friendship', ru: "Можно ли считать одиночество следствием не только обстоятельств, но и общественного устройства?" },
+  { id: 'rsk01', category: 'risk', ru: "Можно ли принять разумное решение, если вероятность исхода неизвестна?" },
+  { id: 'rsk02', category: 'risk', ru: "Чем отличается смелость от безрассудства?" },
+  { id: 'rsk03', category: 'risk', ru: "Должен ли человек избегать риска, если последствия могут затронуть других?" },
+  { id: 'rsk04', category: 'risk', ru: "Насколько ответственность зависит от того, мог ли человек предвидеть случайность?" },
+  { id: 'rsk05', category: 'risk', ru: "Можно ли считать удачный исход доказательством правильности решения?" },
+  { id: 'rsk06', category: 'risk', ru: "Почему люди часто переоценивают редкие опасности и недооценивают привычные?" },
+  { id: 'rsk07', category: 'risk', ru: "Должно ли общество компенсировать ущерб от несчастного случая?" },
+  { id: 'rsk08', category: 'risk', ru: "Кто должен нести риск инноваций: разработчик, пользователь или общество?" },
+  { id: 'rsk09', category: 'risk', ru: "Может ли отказ от риска сам стать опасным решением?" },
+  { id: 'rsk10', category: 'risk', ru: "Что важнее при выборе: ожидаемая выгода или защита от худшего исхода?" },
+  { id: 'rsk11', category: 'risk', ru: "Можно ли справедливо распределить риски между поколениями?" },
+  { id: 'rsk12', category: 'risk', ru: "Насколько допустимо подвергать опасности меньшинство ради вероятной пользы большинству?" },
+  { id: 'rsk13', category: 'risk', ru: "Как отличить случайность от закономерности, которую мы пока не понимаем?" },
+  { id: 'rsk14', category: 'risk', ru: "Должен ли человек страховать всё, что ему дорого?" },
+  { id: 'rsk15', category: 'risk', ru: "Может ли неопределённость быть источником свободы, а не только тревоги?" },
+  { id: 'rsk16', category: 'risk', ru: "Почему люди склонны искать виновного даже там, где произошла случайная трагедия?" },
+  { id: 'rsk17', category: 'risk', ru: "Нужно ли принимать решение быстрее, если ожидание тоже несёт риск?" },
+  { id: 'rsk18', category: 'risk', ru: "Какую роль интуиция должна играть в условиях нехватки данных?" },
+  { id: 'rsk19', category: 'risk', ru: "Может ли общество стать слишком осторожным, чтобы развиваться?" },
+  { id: 'rsk20', category: 'risk', ru: "Кто отвечает за последствия решения, основанного на ошибочном прогнозе?" },
+  { id: 'rsk21', category: 'risk', ru: "Должны ли публичные политики открыто сообщать о степени неопределённости?" },
+  { id: 'rsk22', category: 'risk', ru: "Можно ли считать риск добровольным, если человек не понимает его масштаба?" },
+  { id: 'rsk23', category: 'risk', ru: "Как меняется моральная оценка поступка, если его последствия случайны?" },
+  { id: 'rsk24', category: 'risk', ru: "Насколько справедливо вознаграждать людей за удачу?" },
+  { id: 'rsk25', category: 'risk', ru: "Можно ли научиться принимать неопределённость, не становясь пассивным?" },
+  { id: 'rsk26', category: 'risk', ru: "Что опаснее: неизвестная угроза или известная, но недооценённая?" },
+  { id: 'rsk27', category: 'risk', ru: "Должны ли организации раскрывать риски, даже если это вызывает панику?" },
+  { id: 'rsk28', category: 'risk', ru: "Может ли страх перед ошибкой лишить человека возможности учиться?" },
+  { id: 'rsk29', category: 'risk', ru: "Как определить приемлемый риск для целого общества?" },
+  { id: 'rsk30', category: 'risk', ru: "Есть ли решения, которые лучше не принимать до появления дополнительной информации?" },
+  { id: 'prv01', category: 'privacy', ru: "Что делает часть жизни человека частной: секретность или право самому выбирать, чем делиться?" },
+  { id: 'prv02', category: 'privacy', ru: "Имеет ли близкий человек право знать всё о другом?" },
+  { id: 'prv03', category: 'privacy', ru: "Можно ли считать согласие свободным, если отказ грозит потерей работы или поддержки?" },
+  { id: 'prv04', category: 'privacy', ru: "Где проходит граница между общественной безопасностью и личной неприкосновенностью?" },
+  { id: 'prv05', category: 'privacy', ru: "Должен ли человек объяснять окружающим, почему он устанавливает личные границы?" },
+  { id: 'prv06', category: 'privacy', ru: "Может ли публичная известность лишить человека права на частную жизнь?" },
+  { id: 'prv07', category: 'privacy', ru: "Кому принадлежат данные, которые человек оставляет в цифровых сервисах?" },
+  { id: 'prv08', category: 'privacy', ru: "Можно ли использовать личную переписку как доказательство, если она получена без согласия?" },
+  { id: 'prv09', category: 'privacy', ru: "Должны ли родители уважать цифровую приватность подростков?" },
+  { id: 'prv10', category: 'privacy', ru: "Когда забота превращается в наблюдение и контроль?" },
+  { id: 'prv11', category: 'privacy', ru: "Может ли общество требовать прозрачности от власти, сохраняя приватность граждан?" },
+  { id: 'prv12', category: 'privacy', ru: "Имеет ли человек право на забвение собственных прошлых ошибок?" },
+  { id: 'prv13', category: 'privacy', ru: "Должны ли работодатели оценивать личную жизнь сотрудников вне работы?" },
+  { id: 'prv14', category: 'privacy', ru: "Можно ли быть искренним, не раскрывая всех своих переживаний?" },
+  { id: 'prv15', category: 'privacy', ru: "Почему некоторые границы воспринимаются как недоверие?" },
+  { id: 'prv16', category: 'privacy', ru: "Должны ли алгоритмы объяснять, какие личные данные повлияли на решение о человеке?" },
+  { id: 'prv17', category: 'privacy', ru: "Может ли анонимность защищать достоинство и одновременно облегчать причинение вреда?" },
+  { id: 'prv18', category: 'privacy', ru: "Кто должен решать, какие сведения о умершем человеке остаются доступными?" },
+  { id: 'prv19', category: 'privacy', ru: "Насколько допустимо фотографировать людей в общественных местах без их согласия?" },
+  { id: 'prv20', category: 'privacy', ru: "Должны ли публичные учреждения собирать только минимально необходимые данные?" },
+  { id: 'prv21', category: 'privacy', ru: "Можно ли считать цифровое согласие осознанным, если условия слишком сложны для понимания?" },
+  { id: 'prv22', category: 'privacy', ru: "Как защитить личные границы, не разрушая доверие в отношениях?" },
+  { id: 'prv23', category: 'privacy', ru: "Имеет ли общество право знать о частных поступках человека, претендующего на власть?" },
+  { id: 'prv24', category: 'privacy', ru: "Может ли отказ делиться личной информацией быть полноценным гражданским правом?" },
+  { id: 'prv25', category: 'privacy', ru: "Должны ли платформы удалять сведения о человеке по его просьбе?" },
+  { id: 'prv26', category: 'privacy', ru: "Что важнее: удобство персонализации или контроль над собственными данными?" },
+  { id: 'prv27', category: 'privacy', ru: "Может ли постоянное наблюдение изменить поведение даже невиновного человека?" },
+  { id: 'prv28', category: 'privacy', ru: "Когда раскрытие чужой тайны может быть морально оправдано?" },
+  { id: 'prv29', category: 'privacy', ru: "Обязан ли человек сохранять цифровой след для будущей памяти семьи?" },
+  { id: 'prv30', category: 'privacy', ru: "Можно ли защищать достоинство человека, не ограничивая свободу критики его идей?" },
+  { id: 'cns01', category: 'consumption', ru: "Когда владение вещами перестаёт улучшать жизнь и начинает определять её?" },
+  { id: 'cns02', category: 'consumption', ru: "Можно ли измерять благополучие общества объёмом потребления?" },
+  { id: 'cns03', category: 'consumption', ru: "Должен ли человек чувствовать моральную ответственность за происхождение купленных товаров?" },
+  { id: 'cns04', category: 'consumption', ru: "Что справедливее: ограничивать избыточное потребление или расширять доступ к базовым благам?" },
+  { id: 'cns05', category: 'consumption', ru: "Может ли отказ от покупки быть политическим или этическим поступком?" },
+  { id: 'cns06', category: 'consumption', ru: "Почему вещи иногда становятся частью личной идентичности?" },
+  { id: 'cns07', category: 'consumption', ru: "Насколько свободен выбор покупателя, если реклама формирует его желания?" },
+  { id: 'cns08', category: 'consumption', ru: "Должны ли производители отвечать за срок службы своих товаров?" },
+  { id: 'cns09', category: 'consumption', ru: "Можно ли считать роскошь нравственно проблемной в обществе с бедностью?" },
+  { id: 'cns10', category: 'consumption', ru: "Как отличить реальную потребность от привычки и навязанного желания?" },
+  { id: 'cns11', category: 'consumption', ru: "Должно ли общество поощрять ремонт и повторное использование вещей?" },
+  { id: 'cns12', category: 'consumption', ru: "Кому принадлежит ответственность за экологический ущерб массового производства?" },
+  { id: 'cns13', category: 'consumption', ru: "Может ли экономия стать формой заботы о будущем?" },
+  { id: 'cns14', category: 'consumption', ru: "Что ценнее: иметь больше возможностей купить или иметь меньше причин покупать?" },
+  { id: 'cns15', category: 'consumption', ru: "Должны ли товары первой необходимости облагаться налогами иначе, чем предметы роскоши?" },
+  { id: 'cns16', category: 'consumption', ru: "Может ли минимализм быть привилегией, доступной не всем?" },
+  { id: 'cns17', category: 'consumption', ru: "Насколько справедливо оценивать человека по его материальному достатку?" },
+  { id: 'cns18', category: 'consumption', ru: "Должны ли компании раскрывать полную стоимость владения сложным товаром?" },
+  { id: 'cns19', category: 'consumption', ru: "Может ли совместное пользование вещами заменить индивидуальное владение?" },
+  { id: 'cns20', category: 'consumption', ru: "Что общество теряет, когда успех связывают преимущественно с богатством?" },
+  { id: 'cns21', category: 'consumption', ru: "Обязан ли обеспеченный человек потреблять меньше ради общего блага?" },
+  { id: 'cns22', category: 'consumption', ru: "Как культура подарков влияет на отношения между людьми?" },
+  { id: 'cns23', category: 'consumption', ru: "Может ли бесплатная вещь иметь высокую общественную ценность?" },
+  { id: 'cns24', category: 'consumption', ru: "Должны ли государства ограничивать рекламу, обращённую к детям?" },
+  { id: 'cns25', category: 'consumption', ru: "Когда накопление становится разумной предусмотрительностью, а когда страхом?" },
+  { id: 'cns26', category: 'consumption', ru: "Может ли экономический рост быть желательным без роста материального потребления?" },
+  { id: 'cns27', category: 'consumption', ru: "Кто должен оплачивать утилизацию товаров, которые быстро устаревают?" },
+  { id: 'cns28', category: 'consumption', ru: "Почему человеку бывает трудно отказаться от вещи, которой он почти не пользуется?" },
+  { id: 'cns29', category: 'consumption', ru: "Можно ли построить общество, где статус меньше зависит от собственности?" },
+  { id: 'cns30', category: 'consumption', ru: "Что важнее в экономике: удовлетворение потребностей или создание новых желаний?" },
+  { id: 'ftr01', category: 'future', ru: "Имеет ли нынешнее поколение право принимать решения, последствия которых определят жизнь далёких потомков?" },
+  { id: 'ftr02', category: 'future', ru: "Какую ответственность мы несём перед людьми, которые ещё не родились?" },
+  { id: 'ftr03', category: 'future', ru: "Должно ли развитие технологий подчиняться общему представлению о желательном будущем?" },
+  { id: 'ftr04', category: 'future', ru: "Можно ли считать прогрессом изменение, которое улучшает жизнь одних и ухудшает жизнь других?" },
+  { id: 'ftr05', category: 'future', ru: "Что важнее для будущего цивилизации: устойчивость институтов или способность быстро меняться?" },
+  { id: 'ftr06', category: 'future', ru: "Должны ли государства сотрудничать даже тогда, когда выгода от сотрудничества распределяется неравномерно?" },
+  { id: 'ftr07', category: 'future', ru: "Может ли человечество иметь общую цель, сохраняя культурное разнообразие?" },
+  { id: 'ftr08', category: 'future', ru: "Кто вправе говорить от имени будущих поколений?" },
+  { id: 'ftr09', category: 'future', ru: "Нужно ли сохранять знания, которые могут быть опасны при неправильном использовании?" },
+  { id: 'ftr10', category: 'future', ru: "Как определить, какие технологии следует развивать медленнее?" },
+  { id: 'ftr11', category: 'future', ru: "Может ли цивилизация быть развитой, если её развитие разрушает природные системы?" },
+  { id: 'ftr12', category: 'future', ru: "Должны ли богатые общества помогать другим переходить к устойчивой экономике?" },
+  { id: 'ftr13', category: 'future', ru: "Что опаснее для будущего: нехватка ресурсов или неспособность договориться об их распределении?" },
+  { id: 'ftr14', category: 'future', ru: "Может ли международное право ограничивать решения государства ради планетарной безопасности?" },
+  { id: 'ftr15', category: 'future', ru: "Нужно ли сохранять культурное наследие, если оно мешает необходимым переменам?" },
+  { id: 'ftr16', category: 'future', ru: "Как совместить технологический прогресс с человеческим достоинством?" },
+  { id: 'ftr17', category: 'future', ru: "Должны ли искусственные системы принимать решения, затрагивающие судьбу целых обществ?" },
+  { id: 'ftr18', category: 'future', ru: "Можно ли считать человечество единым политическим сообществом?" },
+  { id: 'ftr19', category: 'future', ru: "Что должно быть главным критерием успеха цивилизации через сто лет?" },
+  { id: 'ftr20', category: 'future', ru: "Как избежать того, чтобы краткосрочная выгода определяла долгосрочную политику?" },
+  { id: 'ftr21', category: 'future', ru: "Должны ли будущие поколения иметь право оспаривать экологический ущерб, причинённый сегодня?" },
+  { id: 'ftr22', category: 'future', ru: "Может ли общество отказаться от части удобств ради устойчивого будущего?" },
+  { id: 'ftr23', category: 'future', ru: "Что важнее передать потомкам: материальное богатство, знания или справедливые институты?" },
+  { id: 'ftr24', category: 'future', ru: "Как распределять ответственность за глобальные проблемы между странами с разной историей развития?" },
+  { id: 'ftr25', category: 'future', ru: "Может ли человечество развиваться без единого представления о прогрессе?" },
+  { id: 'ftr26', category: 'future', ru: "Должны ли решения о космосе приниматься как общечеловеческие, а не национальные?" },
+  { id: 'ftr27', category: 'future', ru: "Когда осторожность перед неизвестным будущим оправдана, а когда она тормозит развитие?" },
+  { id: 'ftr28', category: 'future', ru: "Как сохранить человеческую автономию в мире всё более сложных технологий?" },
+  { id: 'ftr29', category: 'future', ru: "Можно ли считать будущее справедливым, если сегодняшние решения создают необратимые преимущества для немногих?" },
+  { id: 'ftr30', category: 'future', ru: "Что цивилизация должна считать недопустимой ценой собственного развития?" },
+  { id: 'glt01', category: 'guilt', ru: "Чем личная вина отличается от ответственности за последствия?" },
+  { id: 'glt02', category: 'guilt', ru: "Можно ли искренне раскаяться, не имея возможности исправить причинённый вред?" },
+  { id: 'glt03', category: 'guilt', ru: "Должно ли прощение зависеть от признания вины?" },
+  { id: 'glt04', category: 'guilt', ru: "Всегда ли наказание помогает восстановить справедливость?" },
+  { id: 'glt05', category: 'guilt', ru: "Может ли человек искупить поступок, который невозможно компенсировать?" },
+  { id: 'glt06', category: 'guilt', ru: "Кто вправе простить вред, причинённый не только ему, но и другим людям?" },
+  { id: 'glt07', category: 'guilt', ru: "Должна ли давность менять моральную оценку старого поступка?" },
+  { id: 'glt08', category: 'guilt', ru: "Можно ли требовать раскаяния, если человек не считает своё действие неправильным?" },
+  { id: 'glt09', category: 'guilt', ru: "Что важнее для пострадавшего: наказание виновного или восстановление утраченного?" },
+  { id: 'glt10', category: 'guilt', ru: "Может ли общественное осуждение заменить юридическую ответственность?" },
+  { id: 'glt11', category: 'guilt', ru: "Когда чувство вины помогает измениться, а когда становится разрушительным?" },
+  { id: 'glt12', category: 'guilt', ru: "Обязан ли человек публично признавать ошибку, если вред был нанесён публично?" },
+  { id: 'glt13', category: 'guilt', ru: "Должны ли обстоятельства смягчать ответственность за сознательный поступок?" },
+  { id: 'glt14', category: 'guilt', ru: "Может ли прощение быть свободным, если общество ожидает его от пострадавшего?" },
+  { id: 'glt15', category: 'guilt', ru: "Как отличить объяснение причин поступка от попытки оправдать его?" },
+  { id: 'glt16', category: 'guilt', ru: "Должны ли дети нести моральную ответственность за действия родителей?" },
+  { id: 'glt17', category: 'guilt', ru: "Можно ли восстановить доверие без полного забвения причинённого вреда?" },
+  { id: 'glt18', category: 'guilt', ru: "Когда отказ от мести является нравственной силой, а когда — вынужденной уступкой?" },
+  { id: 'glt19', category: 'guilt', ru: "Имеет ли общество право навсегда исключить человека за тяжёлую ошибку?" },
+  { id: 'glt20', category: 'guilt', ru: "Как соотнести право на второй шанс с обязанностью защищать потенциальных пострадавших?" },
+  { id: 'glt21', category: 'guilt', ru: "Должен ли виновный иметь право на приватность после отбытия наказания?" },
+  { id: 'glt22', category: 'guilt', ru: "Можно ли считать справедливым наказание, которое не помогает ни пострадавшему, ни обществу?" },
+  { id: 'glt23', category: 'guilt', ru: "Кто несёт ответственность, если вред возник из-за множества небольших решений разных людей?" },
+  { id: 'glt24', category: 'guilt', ru: "Должна ли компенсация учитывать не только материальный, но и символический ущерб?" },
+  { id: 'glt25', category: 'guilt', ru: "Может ли признание исторической несправедливости быть важным без последующего возмещения?" },
+  { id: 'glt26', category: 'guilt', ru: "Когда извинение становится способом снять с себя ответственность?" },
+  { id: 'glt27', category: 'guilt', ru: "Обязан ли человек исправлять ошибку, если никто не узнал о ней?" },
+  { id: 'glt28', category: 'guilt', ru: "Можно ли простить человека и одновременно считать его опасным?" },
+  { id: 'glt29', category: 'guilt', ru: "Что делает восстановительное правосудие справедливым для всех сторон?" },
+  { id: 'glt30', category: 'guilt', ru: "Есть ли предел, после которого общество вправе отказаться от идеи второго шанса?" }
 ];
 
 // ============================================================
@@ -3424,7 +3629,7 @@ const ACHIEVEMENTS_DEF = [
   { id: 'genius', name: 'Гений', desc: 'Ответьте на 250 вопросов', icon: '💡', rare: false, check: () => answeredTotal() >= 250 },
   { id: 'grandmaster', name: 'Грандмастер', desc: 'Ответьте на 300 вопросов', icon: '⚡', rare: true, check: () => answeredTotal() >= 300 },
   { id: 'oracle', name: 'Оракул', desc: 'Ответьте на 400 вопросов', icon: '🔮', rare: true, check: () => answeredTotal() >= 400 },
-  { id: 'infinite', name: 'Бесконечный', desc: 'Ответьте на 450 вопросов', icon: '♾️', rare: true, check: () => answeredTotal() >= 450 },
+  { id: 'infinite', name: 'Бесконечный', desc: 'Ответьте на 1000 вопросов', icon: '♾️', rare: true, check: () => answeredTotal() >= 1000 },
   { id: 'absolute', name: 'Абсолют', desc: `Ответьте на все ${QUESTIONS.length} вопросов`, icon: '👑', rare: true, check: () => QUESTIONS.every(q => answers[q.id] && answers[q.id].trim()) },
   
   { id: 'streak3', name: 'Первые шаги', desc: 'Серия 3 дня подряд', icon: '🚶', rare: false, check: () => streakData.current >= 3 },
@@ -3445,34 +3650,7 @@ const ACHIEVEMENTS_DEF = [
   { id: 'creator', name: 'Демиург', desc: 'Создайте 100 своих вопросов', icon: '🌟', rare: true, check: () => customQuestions.length >= 100 },
   
   { id: 'completionist', name: 'Перфекционист', desc: 'Ответьте на все вопросы в одной категории', icon: '👑', rare: false, check: () => { let completed = 0; ALL_CATEGORIES.forEach(cat => { const qs = QUESTIONS.filter(q => q.category === cat.id); const answered = qs.filter(q => answers[q.id] && answers[q.id].trim()).length; if (qs.length > 0 && answered === qs.length) completed++; }); return completed >= 1; }},
-  { id: 'deathMaster', name: 'Знаток смерти', desc: 'Ответьте на все вопросы в категории "Смерть"', icon: '💀', rare: false, check: () => { const qs = QUESTIONS.filter(q => q.category === 'death'); return qs.length > 0 && qs.every(q => answers[q.id] && answers[q.id].trim()); }},
-  { id: 'loveMaster', name: 'Знаток любви', desc: 'Ответьте на все вопросы в категории "Любовь"', icon: '❤️', rare: false, check: () => { const qs = QUESTIONS.filter(q => q.category === 'love'); return qs.length > 0 && qs.every(q => answers[q.id] && answers[q.id].trim()); }},
-  { id: 'ethicsMaster', name: 'Знаток этики', desc: 'Ответьте на все вопросы в категории "Этика"', icon: '⚖️', rare: false, check: () => { const qs = QUESTIONS.filter(q => q.category === 'ethics'); return qs.length > 0 && qs.every(q => answers[q.id] && answers[q.id].trim()); }},
-  { id: 'timeMaster', name: 'Знаток времени', desc: 'Ответьте на все вопросы в категории "Время"', icon: '⌛', rare: false, check: () => { const qs = QUESTIONS.filter(q => q.category === 'time'); return qs.length > 0 && qs.every(q => answers[q.id] && answers[q.id].trim()); }},
-  { id: 'identityMaster', name: 'Знаток идентичности', desc: 'Ответьте на все вопросы в категории "Идентичность"', icon: '🧩', rare: false, check: () => { const qs = QUESTIONS.filter(q => q.category === 'identity'); return qs.length > 0 && qs.every(q => answers[q.id] && answers[q.id].trim()); }},
-  { id: 'freedomMaster', name: 'Знаток свободы', desc: 'Ответьте на все вопросы в категории "Свобода"', icon: '🕊️', rare: false, check: () => { const qs = QUESTIONS.filter(q => q.category === 'freedom'); return qs.length > 0 && qs.every(q => answers[q.id] && answers[q.id].trim()); }},
-  { id: 'knowledgeMaster', name: 'Знаток истины', desc: 'Ответьте на все вопросы в категории "Истина"', icon: '💎', rare: false, check: () => { const qs = QUESTIONS.filter(q => q.category === 'knowledge'); return qs.length > 0 && qs.every(q => answers[q.id] && answers[q.id].trim()); }},
-  { id: 'meaningMaster', name: 'Знаток смысла', desc: 'Ответьте на все вопросы в категории "Смысл"', icon: '🌀', rare: false, check: () => { const qs = QUESTIONS.filter(q => q.category === 'meaning'); return qs.length > 0 && qs.every(q => answers[q.id] && answers[q.id].trim()); }},
-  { id: 'happinessMaster', name: 'Знаток счастья', desc: 'Ответьте на все вопросы в категории "Счастье"', icon: '😊', rare: false, check: () => { const qs = QUESTIONS.filter(q => q.category === 'happiness'); return qs.length > 0 && qs.every(q => answers[q.id] && answers[q.id].trim()); }},
-  { id: 'justiceMaster', name: 'Знаток справедливости', desc: 'Ответьте на все вопросы в категории "Справедливость"', icon: '⚖️', rare: false, check: () => { const qs = QUESTIONS.filter(q => q.category === 'justice'); return qs.length > 0 && qs.every(q => answers[q.id] && answers[q.id].trim()); }},
-  { id: 'natureMaster', name: 'Знаток природы', desc: 'Ответьте на все вопросы в категории "Природа"', icon: '🌿', rare: false, check: () => { const qs = QUESTIONS.filter(q => q.category === 'nature'); return qs.length > 0 && qs.every(q => answers[q.id] && answers[q.id].trim()); }},
-  { id: 'techMaster', name: 'Знаток технологий', desc: 'Ответьте на все вопросы в категории "Технологии"', icon: '💻', rare: false, check: () => { const qs = QUESTIONS.filter(q => q.category === 'technology'); return qs.length > 0 && qs.every(q => answers[q.id] && answers[q.id].trim()); }},
-  { id: 'artMaster', name: 'Знаток искусства', desc: 'Ответьте на все вопросы в категории "Искусство"', icon: '🎨', rare: false, check: () => { const qs = QUESTIONS.filter(q => q.category === 'art'); return qs.length > 0 && qs.every(q => answers[q.id] && answers[q.id].trim()); }},
-  { id: 'scienceMaster', name: 'Знаток науки', desc: 'Ответьте на все вопросы в категории "Наука"', icon: '🔬', rare: false, check: () => { const qs = QUESTIONS.filter(q => q.category === 'science'); return qs.length > 0 && qs.every(q => answers[q.id] && answers[q.id].trim()); }},
-  { id: 'educationMaster', name: 'Знаток образования', desc: 'Ответьте на все вопросы в категории "Образование"', icon: '📚', rare: false, check: () => { const qs = QUESTIONS.filter(q => q.category === 'education'); return qs.length > 0 && qs.every(q => answers[q.id] && answers[q.id].trim()); }},
-  { id: 'religionMaster', name: 'Знаток религии', desc: 'Ответьте на все вопросы в категории "Религия"', icon: '🕯️', rare: false, check: () => { const qs = QUESTIONS.filter(q => q.category === 'religion'); return qs.length > 0 && qs.every(q => answers[q.id] && answers[q.id].trim()); }},
-  { id: 'experimentsMaster', name: 'Знаток экспериментов', desc: 'Ответьте на все вопросы в категории "Эксперименты"', icon: '🧪', rare: false, check: () => { const qs = QUESTIONS.filter(q => q.category === 'experiments'); return qs.length > 0 && qs.every(q => answers[q.id] && answers[q.id].trim()); }},
-  { id: 'societyMaster', name: 'Знаток общества', desc: 'Ответьте на все вопросы в категории "Общество"', icon: '👥', rare: false, check: () => { const qs = QUESTIONS.filter(q => q.category === 'society'); return qs.length > 0 && qs.every(q => answers[q.id] && answers[q.id].trim()); }},
-  { id: 'existenceMaster', name: 'Знаток бытия', desc: 'Ответьте на все вопросы в категории "Бытие и существование"', icon: '🌌', rare: false, check: () => { const qs = QUESTIONS.filter(q => q.category === 'existence'); return qs.length > 0 && qs.every(q => answers[q.id] && answers[q.id].trim()); }},
-  { id: 'consciousnessMaster', name: 'Знаток сознания', desc: 'Ответьте на все вопросы в категории "Сознание и личность"', icon: '🧠', rare: false, check: () => { const qs = QUESTIONS.filter(q => q.category === 'consciousness'); return qs.length > 0 && qs.every(q => answers[q.id] && answers[q.id].trim()); }},
-  { id: 'languageMaster', name: 'Знаток языка', desc: 'Ответьте на все вопросы в категории "Язык, общение и понимание"', icon: '🗣️', rare: false, check: () => { const qs = QUESTIONS.filter(q => q.category === 'language'); return qs.length > 0 && qs.every(q => answers[q.id] && answers[q.id].trim()); }},
-  { id: 'workMaster', name: 'Знаток труда', desc: 'Ответьте на все вопросы в категории "Труд, собственность и экономика"', icon: '⚒️', rare: false, check: () => { const qs = QUESTIONS.filter(q => q.category === 'work'); return qs.length > 0 && qs.every(q => answers[q.id] && answers[q.id].trim()); }},
-  { id: 'peaceMaster', name: 'Знаток мира', desc: 'Ответьте на все вопросы в категории "Конфликт, насилие и мир"', icon: '☮️', rare: false, check: () => { const qs = QUESTIONS.filter(q => q.category === 'peace'); return qs.length > 0 && qs.every(q => answers[q.id] && answers[q.id].trim()); }},
-  { id: 'logicMaster', name: 'Знаток логики', desc: 'Ответьте на все вопросы в категории "Логика, парадоксы и аргументация"', icon: '∴', rare: false, check: () => { const qs = QUESTIONS.filter(q => q.category === 'logic'); return qs.length > 0 && qs.every(q => answers[q.id] && answers[q.id].trim()); }},
-  { id: 'politicsMaster', name: 'Знаток политики', desc: 'Ответьте на все вопросы в категории "Политика, идеологии и общественный договор"', icon: '🗳️', rare: false, check: () => { const qs = QUESTIONS.filter(q => q.category === 'politics'); return qs.length > 0 && qs.every(q => answers[q.id] && answers[q.id].trim()); }},
-  { id: 'cultureMaster', name: 'Знаток культуры', desc: 'Ответьте на все вопросы в категории "Культура, традиции и идентичность"', icon: '🎭', rare: false, check: () => { const qs = QUESTIONS.filter(q => q.category === 'culture'); return qs.length > 0 && qs.every(q => answers[q.id] && answers[q.id].trim()); }},
-  { id: 'emotionsMaster', name: 'Знаток эмоций', desc: 'Ответьте на все вопросы в категории "Эмоции, страдание и устойчивость"', icon: '🌊', rare: false, check: () => { const qs = QUESTIONS.filter(q => q.category === 'emotions'); return qs.length > 0 && qs.every(q => answers[q.id] && answers[q.id].trim()); }},
-  { id: 'historyMaster', name: 'Знаток истории', desc: 'Ответьте на все вопросы в категории "История, память и ответственность поколений"', icon: '📜', rare: false, check: () => { const qs = QUESTIONS.filter(q => q.category === 'history'); return qs.length > 0 && qs.every(q => answers[q.id] && answers[q.id].trim()); }},
+  ...ALL_CATEGORIES.map(cat => ({ id: ({"death":"deathMaster","love":"loveMaster","ethics":"ethicsMaster","time":"timeMaster","identity":"identityMaster","freedom":"freedomMaster","knowledge":"knowledgeMaster","meaning":"meaningMaster","happiness":"happinessMaster","justice":"justiceMaster","nature":"natureMaster","technology":"techMaster","art":"artMaster","science":"scienceMaster","education":"educationMaster","religion":"religionMaster","experiments":"experimentsMaster","society":"societyMaster","existence":"existenceMaster","consciousness":"consciousnessMaster","language":"languageMaster","work":"workMaster","peace":"peaceMaster","logic":"logicMaster","politics":"politicsMaster","culture":"cultureMaster","emotions":"emotionsMaster","history":"historyMaster"})[cat.id] || ('categoryMaster_' + cat.id), name: 'Знаток: ' + cat.label, desc: 'Ответьте на все вопросы категории «' + cat.label + '»', icon: cat.icon || '◇', rare: false, check: () => { const qs = QUESTIONS.filter(q => q.category === cat.id); return qs.length > 0 && qs.every(q => answers[q.id] && answers[q.id].trim()); } })),
   { id: 'allCategoriesMaster', name: 'Мастер всего', desc: 'Ответьте на все вопросы во всех категориях', icon: '🏅', rare: true, check: () => { let all = true; ALL_CATEGORIES.forEach(cat => { const qs = QUESTIONS.filter(q => q.category === cat.id); if (!qs.every(q => answers[q.id] && answers[q.id].trim())) all = false; }); return all; }},
   
   { id: 'bookmarker', name: 'Коллекционер', desc: 'Добавьте 10 вопросов в закладки', icon: '❤️', rare: false, check: () => bookmarks.length >= 10 },
@@ -3517,6 +3695,8 @@ const ACHIEVEMENTS_DEF = [
   { id: 'daily30', name: 'Ежедневный III', desc: 'Ответьте на вопрос дня 30 раз', icon: '📅', rare: false, check: () => dailyCount >= 30 },
   { id: 'daily100', name: 'Мастер ежедневных вопросов', desc: 'Ответьте на вопрос дня 100 раз', icon: '🏆', rare: true, check: () => dailyCount >= 100 },
 ];
+
+if (achievements.infinite && answeredTotal() < 1000) { delete achievements.infinite; persistAchievements(); }
 
 function checkAchievements() {
   if (window.__pruneAchievements) { window.__pruneAchievements(); window.__pruneAchievements = null; }
@@ -4334,17 +4514,20 @@ function renderCategories() {
   });
   statsHTML += '</div>';
   
-  let cardsHTML = '';
-  catsWithProgress.forEach(cat => {
-    cardsHTML += `
-      <div class="cat-card" onclick="openCategory('${cat.id}')" style="--cat-color:${cat.color}; --cat-tint:${cat.color}20; --p:${Math.round(cat.progress * 100)}%">
-        <div class="cat-card-main">
-          <span class="cat-icon-wrap" aria-hidden="true">${cat.icon || '◇'}</span>
-          <div class="cat-card-copy"><span class="cat-name">${cat.label}</span><div class="cat-meta"><span>${cat.total} вопросов</span><span class="cat-progress-label">${cat.answered}/${cat.total}</span><span class="cat-progress-track"><span class="cat-progress-fill" style="--progress:${Math.round(cat.progress * 100)}%"></span></span></div></div>
-        </div>
-        <div class="chevron" aria-hidden="true">›</div>
-      </div>`;
-  });
+  const categoryCardHTML = cat => `
+    <div class="cat-card" onclick="openCategory('${cat.id}')" style="--cat-color:${cat.color}; --cat-tint:${cat.color}20; --p:${Math.round(cat.progress * 100)}%">
+      <div class="cat-card-main">
+        <span class="cat-icon-wrap" aria-hidden="true">${cat.icon || '◇'}</span>
+        <div class="cat-card-copy"><span class="cat-name">${cat.label}</span><div class="cat-meta"><span>${cat.total} вопросов</span><span class="cat-progress-label">${cat.answered}/${cat.total}</span><span class="cat-progress-track"><span class="cat-progress-fill" style="--progress:${Math.round(cat.progress * 100)}%"></span></span></div></div>
+      </div>
+      <div class="chevron" aria-hidden="true">›</div>
+    </div>`;
+  const sectionedIds = new Set(CATEGORY_SECTIONS.flatMap(section => section.ids));
+  const cardsHTML = CATEGORY_SECTIONS.map(section => {
+    const sectionCats = section.ids.map(id => catsWithProgress.find(cat => cat.id === id)).filter(Boolean);
+    if (!sectionCats.length) return '';
+    return `<section class="category-section"><h3 class="category-section-title">${section.title}</h3><div class="category-section-grid">${sectionCats.map(categoryCardHTML).join('')}</div></section>`;
+  }).join('') + (() => { const extra = catsWithProgress.filter(cat => !sectionedIds.has(cat.id)); return extra.length ? `<section class="category-section"><h3 class="category-section-title">Другие темы</h3><div class="category-section-grid">${extra.map(categoryCardHTML).join('')}</div></section>` : ''; })();
 
   const bookmarkCard = bookmarkCount > 0 ? `
     <div class="cat-card" onclick="openCategory('bookmarks')" style="--cat-color:#E74C3C">
