@@ -1766,6 +1766,17 @@
         </div>
         <div style="font-size:11px;color:var(--muted-2);margin-top:4px;">Авто-ночная тема включается с 22:00 до 6:00 по вашему часовому поясу</div>
       </div>
+      <div class="appearance-panel" style="padding:14px 0;border-bottom:1px solid var(--border);">
+        <div style="font-weight:600;margin-bottom:10px;">🖋️ Дополнительная настройка оформления</div>
+        <div class="appearance-control"><label for="appearanceAccent">Акцентный цвет</label><select id="appearanceAccent" class="timezone-select" onchange="setAppearance('accent',this.value)"><option value="gold">Золотой</option><option value="blue">Синий</option><option value="green">Зелёный</option><option value="violet">Фиолетовый</option><option value="rose">Терракотовый</option><option value="mono">Монохромный</option></select></div>
+        <div class="appearance-control"><label for="appearanceFont">Размер текста</label><div class="appearance-inline"><input id="appearanceFont" type="range" min="90" max="120" step="5" value="100" oninput="setAppearance('font',this.value)"><output id="appearanceFontValue">100%</output></div></div>
+        <div class="appearance-control"><label for="appearanceSpacing">Межстрочный интервал</label><select id="appearanceSpacing" class="timezone-select" onchange="setAppearance('spacing',this.value)"><option value="compact">Компактный</option><option value="normal">Стандартный</option><option value="relaxed">Свободный</option></select></div>
+        <div class="appearance-control"><label for="appearanceDensity">Плотность карточек</label><select id="appearanceDensity" class="timezone-select" onchange="setAppearance('density',this.value)"><option value="comfortable">Свободная</option><option value="compact">Компактная</option></select></div>
+        <div class="appearance-control appearance-switch"><label for="appearanceMotion">Уменьшить анимации</label><input id="appearanceMotion" type="checkbox" onchange="setAppearance('motion',this.checked)"></div>
+        <div class="appearance-control appearance-switch"><label for="appearanceContrast">Повышенная контрастность</label><input id="appearanceContrast" type="checkbox" onchange="setAppearance('contrast',this.checked)"></div>
+        <button class="btn-secondary" style="margin-top:10px;width:100%;" onclick="resetAppearance()">Сбросить дополнительные настройки</button>
+      </div>
+
       <div style="padding:12px 0;border-bottom:1px solid var(--border);">
         <div style="font-weight:600;margin-bottom:8px;">📬 Контакты</div>
         <a href="https://telegram.me/Sit_With_It" target="_blank" class="btn-primary" style="display:inline-block;padding:8px 16px;border-radius:8px;text-decoration:none;font-size:13px;background:#0088cc;color:#fff;">📱 Telegram</a>
@@ -1919,22 +1930,26 @@ const ALL_CATEGORIES = [
   { id: 'privacy', color: '#7B7198', icon: '▣', label: 'Частная жизнь, границы и достоинство' },
   { id: 'consumption', color: '#A17A61', icon: '◇', label: 'Потребление, достаток и материальные ценности' },
   { id: 'future', color: '#5F8198', icon: '✧', label: 'Будущее цивилизации и межпоколенческий выбор' },
-  { id: 'guilt', color: '#8B6D78', icon: '§', label: 'Вина, прощение и восстановление справедливости' }
+  { id: 'guilt', color: '#8B6D78', icon: '§', label: 'Вина, прощение и восстановление справедливости' },
+  { id: 'moral_luck', color: '#9A7568', icon: '⚖', label: 'Моральная удача и случайность' },
+  { id: 'trust', color: '#668A87', icon: '⌁', label: 'Доверие, обещания и обязательства' },
+  { id: 'home_belonging', color: '#8A8068', icon: '⌂', label: 'Дом, место и чувство принадлежности' },
+  { id: 'attention', color: '#82769A', icon: '◉', label: 'Внимание, привычки и цифровая жизнь' }
 ];
 
 
 // Группировка категорий по крупным философским темам.
 const CATEGORY_SECTIONS = [
-  { title: 'Бытие, знание и мышление', ids: ['existence','knowledge','logic','science','experiments','time','history','risk'] },
-  { title: 'Личность, чувства и отношения', ids: ['consciousness','identity','emotions','happiness','meaning','love','friendship','death','freedom','privacy'] },
+  { title: 'Бытие, знание и мышление', ids: ['existence','knowledge','logic','science','experiments','time','history','risk','moral_luck'] },
+  { title: 'Личность, чувства и отношения', ids: ['consciousness','identity','emotions','happiness','meaning','love','friendship','death','freedom','privacy','trust','home_belonging'] },
   { title: 'Этика, общество и справедливость', ids: ['ethics','society','justice','politics','law','peace','inequality','guilt','religion'] },
   { title: 'Культура, образование и творчество', ids: ['culture','education','language','art','games'] },
-  { title: 'Природа, тело и технологии', ids: ['nature','bioethics','technology','media','future'] },
+  { title: 'Природа, тело и технологии', ids: ['nature','bioethics','technology','media','future','attention'] },
   { title: 'Экономика и повседневная жизнь', ids: ['work','urban','consumption'] }
 ];
 
 // ============================================================
-// ЦИТАТЫ ДНЯ (60 шт: философские цитаты и авторские размышления)
+// ЦИТАТЫ ДНЯ (150 шт: философские цитаты и авторские размышления)
 // ============================================================
 const QUOTES = [
   { text: 'Познай самого себя', author: 'Сократ' },
@@ -2036,7 +2051,57 @@ const QUOTES = [
   { text: "Не всякое ограничение свободы одинаково оправданно.", author: 'Sit With It' },
   { text: "Сомнение полезно, когда ведёт к проверке, а не к безразличию.", author: 'Sit With It' },
   { text: "Ответственность начинается там, где человек замечает последствия своего выбора.", author: 'Sit With It' },
-  { text: "Иногда перемена начинается с того, что привычное перестают считать неизбежным.", author: 'Sit With It' }
+  { text: "Иногда перемена начинается с того, что привычное перестают считать неизбежным.", author: 'Sit With It' },
+  { text: "Внимание — это форма выбора: чему мы отдаём его, то и становится частью нашей жизни.", author: 'Sit With It' },
+  { text: "Не всякая уверенность является знанием, и не всякое сомнение является слабостью.", author: 'Sit With It' },
+  { text: "Человек меняется не только от пережитого, но и от того, как он это осмыслил.", author: 'Sit With It' },
+  { text: "Свобода начинается там, где появляется готовность отвечать за собственный выбор.", author: 'Sit With It' },
+  { text: "Иногда честный вопрос полезнее быстрого ответа.", author: 'Sit With It' },
+  { text: "Память хранит прошлое, но не обязана быть его точной копией.", author: 'Sit With It' },
+  { text: "Справедливость проверяется не отношением к сильным, а отношением к уязвимым.", author: 'Sit With It' },
+  { text: "Привычка незаметно превращает повторение в образ жизни.", author: 'Sit With It' },
+  { text: "Чтобы услышать другого, иногда нужно на время отложить собственную правоту.", author: 'Sit With It' },
+  { text: "Будущее создаётся решениями, которые сегодня кажутся небольшими.", author: 'Sit With It' },
+  { text: "Не каждое ограничение лишает свободы; некоторые помогают ей сохраниться.", author: 'Sit With It' },
+  { text: "Знание расширяет возможности, но не освобождает от необходимости выбирать.", author: 'Sit With It' },
+  { text: "Тишина может быть паузой для мысли, а может стать способом уклониться от ответа.", author: 'Sit With It' },
+  { text: "Чужая боль не становится менее реальной оттого, что мы её не видим.", author: 'Sit With It' },
+  { text: "Ошибку можно исправить, но сначала её необходимо признать.", author: 'Sit With It' },
+  { text: "Смысл не всегда находится готовым: иногда он складывается из поступков.", author: 'Sit With It' },
+  { text: "В споре важно не только победить, но и понять, что именно оказалось под сомнением.", author: 'Sit With It' },
+  { text: "Технология меняет не только наши действия, но и ожидания от самих себя.", author: 'Sit With It' },
+  { text: "Дом — это не только место, но и отношения, в которых можно быть собой.", author: 'Sit With It' },
+  { text: "Обещание связывает настоящее решение с будущей ответственностью.", author: 'Sit With It' },
+  { text: "Случайность влияет на судьбы, но не отменяет нравственной оценки поступков.", author: 'Sit With It' },
+  { text: "Чем больше у человека возможностей, тем важнее вопрос об их последствиях.", author: 'Sit With It' },
+  { text: "Бережное отношение к миру начинается с признания, что он не принадлежит нам целиком.", author: 'Sit With It' },
+  { text: "Не всякую потерю можно компенсировать, но почти любую можно осмыслить.", author: 'Sit With It' },
+  { text: "Внимание ограничено; поэтому его распределение отражает наши приоритеты.", author: 'Sit With It' },
+  { text: "Понимание другого не требует согласия с ним.", author: 'Sit With It' },
+  { text: "Порядок полезен, пока не становится важнее людей, ради которых существует.", author: 'Sit With It' },
+  { text: "Иногда перемена взгляда — не отказ от принципов, а их более точное понимание.", author: 'Sit With It' },
+  { text: "Достоинство не должно зависеть от полезности человека для окружающих.", author: 'Sit With It' },
+  { text: "Смелость — это не отсутствие страха, а способность действовать обдуманно несмотря на него.", author: 'Sit With It' },
+  { text: "Чем быстрее становится мир, тем нужнее пространство для медленного размышления.", author: 'Sit With It' },
+  { text: "Удобство может освобождать время, но может и незаметно управлять привычками.", author: 'Sit With It' },
+  { text: "Не каждый выбор между добром и злом очевиден; иногда приходится сравнивать разные обязанности.", author: 'Sit With It' },
+  { text: "Прошлое нельзя переписать, но можно изменить отношение к его последствиям.", author: 'Sit With It' },
+  { text: "Ответственность начинается не только с намерения, но и с готовности увидеть результат.", author: 'Sit With It' },
+  { text: "Мнение становится прочнее не тогда, когда его никто не оспаривает, а когда оно выдерживает проверку.", author: 'Sit With It' },
+  { text: "Человек не сводится к одной ошибке, одной роли или одному убеждению.", author: 'Sit With It' },
+  { text: "Справедливое решение учитывает не только правила, но и обстоятельства.", author: 'Sit With It' },
+  { text: "Забота о будущем требует иногда отказаться от немедленной выгоды.", author: 'Sit With It' },
+  { text: "Независимость мышления нуждается в открытости к чужим доводам.", author: 'Sit With It' },
+  { text: "Мы не выбираем все условия жизни, но можем размышлять о том, как на них отвечать.", author: 'Sit With It' },
+  { text: "Доверие строится медленно, а разрушается иногда одним поступком.", author: 'Sit With It' },
+  { text: "Вопрос о том, что правильно, часто начинается с вопроса о том, кому может быть причинён вред.", author: 'Sit With It' },
+  { text: "Связь с местом не должна превращаться в запрет на перемены.", author: 'Sit With It' },
+  { text: "Цифровой след — это не вся личность, а лишь часть оставленных ею свидетельств.", author: 'Sit With It' },
+  { text: "Отдых — не противоположность осмысленной жизни, а одно из её условий.", author: 'Sit With It' },
+  { text: "Неопределённость не всегда требует немедленного устранения; иногда с ней нужно научиться жить.", author: 'Sit With It' },
+  { text: "Сильная позиция допускает уточнения, если появляются лучшие основания.", author: 'Sit With It' },
+  { text: "Моральная зрелость проявляется и в том, как человек обращается с теми, кто от него зависит.", author: 'Sit With It' },
+  { text: "Размышление ценно не количеством выводов, а качеством внимания к основаниям.", author: 'Sit With It' }
 ];
 
 function getDailyQuote() {
@@ -2046,7 +2111,7 @@ function getDailyQuote() {
 }
 
 // ============================================================
-// ВОПРОСЫ (40 категорий × 30 = 1200 авторских вопросов)
+// ВОПРОСЫ (44 категории × 30 = 1320 авторских вопросов)
 // ============================================================
 const QUESTIONS = [
   { id:'ex01', category:'existence', ru:"Что значит существовать: быть частью мира или осознавать своё присутствие в нём?" },
@@ -3249,7 +3314,127 @@ const QUESTIONS = [
   { id: 'glt27', category: 'guilt', ru: "Обязан ли человек исправлять ошибку, если никто не узнал о ней?" },
   { id: 'glt28', category: 'guilt', ru: "Можно ли простить человека и одновременно считать его опасным?" },
   { id: 'glt29', category: 'guilt', ru: "Что делает восстановительное правосудие справедливым для всех сторон?" },
-  { id: 'glt30', category: 'guilt', ru: "Есть ли предел, после которого общество вправе отказаться от идеи второго шанса?" }
+  { id: 'glt30', category: 'guilt', ru: "Есть ли предел, после которого общество вправе отказаться от идеи второго шанса?" },
+  { id:'ml01', category:'moral_luck', ru:"Можно ли считать человека полностью ответственным за результат, который зависел от случайности?" },
+  { id:'ml02', category:'moral_luck', ru:"Одинаково ли виноваты два человека с одинаковыми намерениями, если последствия их поступков различаются?" },
+  { id:'ml03', category:'moral_luck', ru:"Должна ли удача влиять на моральную оценку поступка?" },
+  { id:'ml04', category:'moral_luck', ru:"Если опасный поступок случайно не причинил вреда, становится ли он менее неправильным?" },
+  { id:'ml05', category:'moral_luck', ru:"Можно ли заслужить похвалу за результат, который получился благодаря обстоятельствам?" },
+  { id:'ml06', category:'moral_luck', ru:"Насколько справедливо судить человека по последствиям, которые он не мог предвидеть?" },
+  { id:'ml07', category:'moral_luck', ru:"Есть ли разница между риском, который человек принимает для себя, и риском для других?" },
+  { id:'ml08', category:'moral_luck', ru:"Должны ли обстоятельства смягчать ответственность за нарушение обещания?" },
+  { id:'ml09', category:'moral_luck', ru:"Можно ли считать бездействие моральным выбором, если человек не контролировал исход?" },
+  { id:'ml10', category:'moral_luck', ru:"Почему общество часто оценивает результат строже, чем намерение?" },
+  { id:'ml11', category:'moral_luck', ru:"Должна ли случайная возможность помочь другому создавать обязанность помочь?" },
+  { id:'ml12', category:'moral_luck', ru:"Можно ли обвинять человека за преимущество, которое он получил при рождении?" },
+  { id:'ml13', category:'moral_luck', ru:"Если два решения одинаково разумны, делает ли случай одно из них правильным?" },
+  { id:'ml14', category:'moral_luck', ru:"Как отличить оправдание обстоятельствами от честного объяснения поступка?" },
+  { id:'ml15', category:'moral_luck', ru:"Насколько человек отвечает за привычки, сформированные в детстве?" },
+  { id:'ml16', category:'moral_luck', ru:"Может ли удачное последствие сделать ошибочное решение мудрым задним числом?" },
+  { id:'ml17', category:'moral_luck', ru:"Следует ли учитывать неравенство стартовых возможностей при оценке достижений?" },
+  { id:'ml18', category:'moral_luck', ru:"Должен ли человек отвечать за вред, который был практически непредсказуем?" },
+  { id:'ml19', category:'moral_luck', ru:"Если намерение было добрым, но вред очевиден, что важнее при оценке?" },
+  { id:'ml20', category:'moral_luck', ru:"Можно ли считать моральную удачу угрозой идее справедливости?" },
+  { id:'ml21', category:'moral_luck', ru:"Как распределять ответственность между человеком, системой и обстоятельствами?" },
+  { id:'ml22', category:'moral_luck', ru:"Должна ли случайность уменьшать наказание, если вред уже причинён?" },
+  { id:'ml23', category:'moral_luck', ru:"Можно ли требовать одинаковой моральной стойкости от людей в разных условиях?" },
+  { id:'ml24', category:'moral_luck', ru:"Почему людям легче прощать вред, причинённый случайно, чем вред от сознательного выбора?" },
+  { id:'ml25', category:'moral_luck', ru:"Есть ли поступки, которые правильны независимо от их последствий?" },
+  { id:'ml26', category:'moral_luck', ru:"Насколько важна способность предвидеть последствия для моральной ответственности?" },
+  { id:'ml27', category:'moral_luck', ru:"Может ли человек быть ответственным за то, что не сделал, хотя мог предотвратить вред?" },
+  { id:'ml28', category:'moral_luck', ru:"Должна ли удача влиять на распределение общественного признания?" },
+  { id:'ml29', category:'moral_luck', ru:"Как не путать личную заслугу с преимуществами среды и обстоятельств?" },
+  { id:'ml30', category:'moral_luck', ru:"Что справедливее оценивать: намерение, выбор, последствия или всю ситуацию целиком?" },
+  { id:'tr01', category:'trust', ru:"Что превращает знакомство в доверие?" },
+  { id:'tr02', category:'trust', ru:"Можно ли доверять человеку, не разделяя его убеждений?" },
+  { id:'tr03', category:'trust', ru:"Обязан ли человек всегда выполнять данное обещание?" },
+  { id:'tr04', category:'trust', ru:"Когда нарушение обещания может быть оправдано?" },
+  { id:'tr05', category:'trust', ru:"Можно ли восстановить доверие после серьёзного обмана?" },
+  { id:'tr06', category:'trust', ru:"Чем доверие отличается от зависимости?" },
+  { id:'tr07', category:'trust', ru:"Должно ли доверие быть взаимным, чтобы оставаться разумным?" },
+  { id:'tr08', category:'trust', ru:"Можно ли доверять институтам больше, чем отдельным людям?" },
+  { id:'tr09', category:'trust', ru:"Как отличить осторожность от постоянного подозрения?" },
+  { id:'tr10', category:'trust', ru:"Всегда ли честность требует говорить всё, что известно?" },
+  { id:'tr11', category:'trust', ru:"Есть ли моральная обязанность хранить чужую тайну?" },
+  { id:'tr12', category:'trust', ru:"Когда молчание становится соучастием?" },
+  { id:'tr13', category:'trust', ru:"Может ли обещание быть несправедливым уже в момент его заключения?" },
+  { id:'tr14', category:'trust', ru:"Что важнее для доверия: последовательность поступков или искренность слов?" },
+  { id:'tr15', category:'trust', ru:"Можно ли требовать доверия, если сам не готов быть открытым?" },
+  { id:'tr16', category:'trust', ru:"Почему люди иногда доверяют знакомому мнению больше, чем проверенным данным?" },
+  { id:'tr17', category:'trust', ru:"Какую роль играет уязвимость в близких отношениях?" },
+  { id:'tr18', category:'trust', ru:"Должен ли человек объяснять отказ от обещания?" },
+  { id:'tr19', category:'trust', ru:"Можно ли доверять тому, кто никогда не признаёт ошибок?" },
+  { id:'tr20', category:'trust', ru:"Что делать, если верность одному обещанию нарушает другое?" },
+  { id:'tr21', category:'trust', ru:"Является ли доверие общественным ресурсом?" },
+  { id:'tr22', category:'trust', ru:"Может ли чрезмерное доверие причинять вред?" },
+  { id:'tr23', category:'trust', ru:"Как отличить прощение от восстановления прежнего доверия?" },
+  { id:'tr24', category:'trust', ru:"Нужно ли давать второй шанс человеку, который подвёл?" },
+  { id:'tr25', category:'trust', ru:"Может ли общество существовать без общих правил доверия?" },
+  { id:'tr26', category:'trust', ru:"Какую ответственность несёт тот, кому доверили власть?" },
+  { id:'tr27', category:'trust', ru:"Должны ли обещания иметь одинаковую силу независимо от обстоятельств?" },
+  { id:'tr28', category:'trust', ru:"Можно ли быть честным и при этом намеренно вводить в заблуждение?" },
+  { id:'tr29', category:'trust', ru:"Что разрушает доверие быстрее: ложь, равнодушие или непоследовательность?" },
+  { id:'tr30', category:'trust', ru:"Как понять, что доверие стало осознанным выбором, а не привычкой?" },
+  { id:'hb01', category:'home_belonging', ru:"Что делает место домом: память, люди, привычки или чувство безопасности?" },
+  { id:'hb02', category:'home_belonging', ru:"Можно ли принадлежать сразу нескольким культурам и местам?" },
+  { id:'hb03', category:'home_belonging', ru:"Обязан ли человек сохранять связь с местом, где родился?" },
+  { id:'hb04', category:'home_belonging', ru:"Почему одни места вызывают чувство принадлежности, а другие — отчуждение?" },
+  { id:'hb05', category:'home_belonging', ru:"Может ли дом существовать без постоянного адреса?" },
+  { id:'hb06', category:'home_belonging', ru:"Как миграция меняет представление человека о собственной идентичности?" },
+  { id:'hb07', category:'home_belonging', ru:"Есть ли у города моральная ответственность перед его жителями?" },
+  { id:'hb08', category:'home_belonging', ru:"Кому принадлежит общественное пространство?" },
+  { id:'hb09', category:'home_belonging', ru:"Должны ли исторические места сохраняться любой ценой?" },
+  { id:'hb10', category:'home_belonging', ru:"Может ли развитие города оправдать исчезновение привычного района?" },
+  { id:'hb11', category:'home_belonging', ru:"Что важнее в жилой среде: удобство, красота или доступность?" },
+  { id:'hb12', category:'home_belonging', ru:"Почему чувство дома иногда связано не с местом, а с людьми?" },
+  { id:'hb13', category:'home_belonging', ru:"Можно ли чувствовать принадлежность к стране, критикуя её устройство?" },
+  { id:'hb14', category:'home_belonging', ru:"Как отличить любовь к родному месту от идеализации прошлого?" },
+  { id:'hb15', category:'home_belonging', ru:"Должны ли жители участвовать в решениях о преобразовании своего района?" },
+  { id:'hb16', category:'home_belonging', ru:"Может ли человек потерять дом, не потеряв жильё?" },
+  { id:'hb17', category:'home_belonging', ru:"Что делает общественное пространство по-настоящему общим?" },
+  { id:'hb18', category:'home_belonging', ru:"Как архитектура влияет на поведение и отношения людей?" },
+  { id:'hb19', category:'home_belonging', ru:"Должна ли память о прошлом определять будущее места?" },
+  { id:'hb20', category:'home_belonging', ru:"Можно ли считать природу частью дома?" },
+  { id:'hb21', category:'home_belonging', ru:"Что важнее для чувства принадлежности: общая история или общие ценности?" },
+  { id:'hb22', category:'home_belonging', ru:"Как сохранить местную культуру, не превращая её в закрытую систему?" },
+  { id:'hb23', category:'home_belonging', ru:"Может ли незнакомый город со временем стать родным?" },
+  { id:'hb24', category:'home_belonging', ru:"Есть ли у будущих поколений право на сохранение исторического облика мест?" },
+  { id:'hb25', category:'home_belonging', ru:"Почему утрата привычного пространства может восприниматься как личная потеря?" },
+  { id:'hb26', category:'home_belonging', ru:"Должны ли города быть одинаково удобны для людей разных возрастов и возможностей?" },
+  { id:'hb27', category:'home_belonging', ru:"Может ли чувство принадлежности существовать без границ между «своими» и «чужими»?" },
+  { id:'hb28', category:'home_belonging', ru:"Как совместить личное пространство с потребностью в общественной жизни?" },
+  { id:'hb29', category:'home_belonging', ru:"Кто должен решать, какие места заслуживают сохранения?" },
+  { id:'hb30', category:'home_belonging', ru:"Что человек должен месту, которое стало для него домом?" },
+  { id:'at01', category:'attention', ru:"Можно ли считать внимание самой ценной формой личного времени?" },
+  { id:'at02', category:'attention', ru:"Кто управляет нашим вниманием в цифровой среде?" },
+  { id:'at03', category:'attention', ru:"Когда привычка перестаёт быть свободным выбором?" },
+  { id:'at04', category:'attention', ru:"Должны ли цифровые платформы отвечать за формирование зависимого поведения?" },
+  { id:'at05', category:'attention', ru:"Можно ли одновременно глубоко думать и постоянно переключаться между задачами?" },
+  { id:'at06', category:'attention', ru:"Почему короткие отвлечения иногда нарушают ход долгого размышления?" },
+  { id:'at07', category:'attention', ru:"Имеет ли человек право на цифровое забвение?" },
+  { id:'at08', category:'attention', ru:"Должны ли приложения по умолчанию ограничивать навязчивые уведомления?" },
+  { id:'at09', category:'attention', ru:"Как отличить полезное использование технологии от автоматической привычки?" },
+  { id:'at10', category:'attention', ru:"Является ли скука необходимым условием творчества?" },
+  { id:'at11', category:'attention', ru:"Можно ли научиться управлять вниманием без строгой дисциплины?" },
+  { id:'at12', category:'attention', ru:"Что теряется, когда каждый свободный момент заполняется экраном?" },
+  { id:'at13', category:'attention', ru:"Должны ли алгоритмы объяснять, почему они показывают конкретный контент?" },
+  { id:'at14', category:'attention', ru:"Насколько свободен выбор, если среда постоянно подталкивает к определённому действию?" },
+  { id:'at15', category:'attention', ru:"Может ли постоянная доступность связи ослаблять близость?" },
+  { id:'at16', category:'attention', ru:"Как сохранить личное пространство в мире непрерывной коммуникации?" },
+  { id:'at17', category:'attention', ru:"Должно ли цифровое образование учить не только пользоваться технологиями, но и сопротивляться отвлечению?" },
+  { id:'at18', category:'attention', ru:"Можно ли измерить качество внимания количеством выполненных задач?" },
+  { id:'at19', category:'attention', ru:"Почему человеку бывает трудно оставаться наедине со своими мыслями?" },
+  { id:'at20', category:'attention', ru:"Есть ли моральная сторона у дизайна, который удерживает пользователя как можно дольше?" },
+  { id:'at21', category:'attention', ru:"Как уведомления меняют ощущение срочности?" },
+  { id:'at22', category:'attention', ru:"Должны ли дети иметь право на цифровую приватность от взрослых?" },
+  { id:'at23', category:'attention', ru:"Можно ли считать отказ от некоторых технологий формой свободы?" },
+  { id:'at24', category:'attention', ru:"Что важнее: скорость получения информации или способность её осмыслить?" },
+  { id:'at25', category:'attention', ru:"Как отличить отдых от бесконечного потребления контента?" },
+  { id:'at26', category:'attention', ru:"Может ли цифровая память ослаблять собственную память человека?" },
+  { id:'at27', category:'attention', ru:"Нужно ли обществу право на периоды недоступности?" },
+  { id:'at28', category:'attention', ru:"Кто несёт ответственность за цифровые привычки: пользователь, семья, школа или разработчик?" },
+  { id:'at29', category:'attention', ru:"Как технологии могут поддерживать сосредоточенность, а не разрушать её?" },
+  { id:'at30', category:'attention', ru:"Что означает осознанно распоряжаться собственным вниманием?" }
 ];
 
 // ============================================================
@@ -3899,7 +4084,8 @@ function exportPdf() {
   });
   if (count === 0) content += '<p>Нет ответов.</p>';
   const win = window.open('', '_blank');
-  win.document.write(`<html><head><title>Ответы</title><style>body{font-family:Georgia,serif;max-width:800px;margin:40px auto;padding:20px;background:#fff;}h1{color:#1E2A28;}h2{color:#9A7B4F;font-size:18px;margin-top:24px;}hr{border:none;border-top:1px solid #ddd;margin:16px 0;}</style></head><body>${content}</body></html>`);
+  win.document.write(`<html><head><title>Ответы</title><style>body{font-family:Georgia,serif;max-width:800px;margin:40px auto;padding:20px;background:#fff;}h1{color:#1E2A28;}h2{color:#9A7B4F;font-size:18px;margin-top:24px;}hr{border:none;border-top:1px solid #ddd;margin:16px 0;}</style></head><body>${content}
+</body></html>`);
   win.document.close();
   setTimeout(() => win.print(), 500);
   checkAchievements();
@@ -5167,6 +5353,39 @@ console.log('🌐 Часовой пояс:', userTimezone);
 
   // ---------- первый показ ----------
   afterRender(null, true);
+})();
+</script>
+<style>
+.appearance-control{margin:10px 0 12px;display:flex;flex-direction:column;gap:6px}
+.appearance-control label{font:500 13px 'Inter',sans-serif;color:var(--text)}
+.appearance-inline{display:flex;align-items:center;gap:12px}
+.appearance-inline input{flex:1;accent-color:var(--accent)}
+.appearance-inline output{font:600 12px 'Inter',sans-serif;color:var(--muted);min-width:42px;text-align:right}
+.appearance-switch{flex-direction:row;align-items:center;justify-content:space-between}
+.appearance-switch input{width:18px;height:18px;accent-color:var(--accent)}
+html[data-font-scale="90"] #app{font-size:90%} html[data-font-scale="95"] #app{font-size:95%}
+html[data-font-scale="105"] #app{font-size:105%} html[data-font-scale="110"] #app{font-size:110%} html[data-font-scale="115"] #app{font-size:115%} html[data-font-scale="120"] #app{font-size:120%}
+html[data-line-spacing="compact"] .q-item,html[data-line-spacing="compact"] .cat-card{line-height:1.25}
+html[data-line-spacing="normal"] .q-item,html[data-line-spacing="normal"] .cat-card{line-height:1.5}
+html[data-line-spacing="relaxed"] .q-item,html[data-line-spacing="relaxed"] .cat-card{line-height:1.8}
+html[data-card-density="compact"] .cat-card{padding:10px 14px}
+html[data-card-density="comfortable"] .cat-card{padding:16px 18px}
+html[data-high-contrast="true"]{--muted:#555!important;--muted-2:#666!important;--border-strong:#777!important}
+html[data-theme="dark"][data-high-contrast="true"],html[data-theme="black"][data-high-contrast="true"]{--muted:#D0D0D0!important;--muted-2:#B8B8B8!important;--border:#666!important}
+html[data-reduce-motion="true"] *,html[data-reduce-motion="true"] *::before,html[data-reduce-motion="true"] *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}
+html[data-accent="blue"]{--accent:#477FA8!important} html[data-accent="green"]{--accent:#54856B!important}
+html[data-accent="violet"]{--accent:#8070A8!important} html[data-accent="rose"]{--accent:#A66D63!important}
+html[data-accent="mono"]{--accent:#777!important} html[data-accent="gold"]{--accent:#9A7B4F}
+</style>
+<script>
+(function(){
+ const defaults={accent:'gold',font:'100',spacing:'normal',density:'comfortable',motion:false,contrast:false};
+ function read(){try{return Object.assign({},defaults,JSON.parse(localStorage.getItem('sitwithit_appearance_v1')||'{}'))}catch(e){return Object.assign({},defaults)}}
+ function apply(a){const r=document.documentElement;r.dataset.accent=a.accent||'gold';r.dataset.fontScale=String(a.font||100);r.dataset.lineSpacing=a.spacing||'normal';r.dataset.cardDensity=a.density||'comfortable';r.dataset.reduceMotion=String(!!a.motion);r.dataset.highContrast=String(!!a.contrast)}
+ function sync(){const a=read(),map={appearanceAccent:'accent',appearanceFont:'font',appearanceSpacing:'spacing',appearanceDensity:'density',appearanceMotion:'motion',appearanceContrast:'contrast'};Object.keys(map).forEach(id=>{const el=document.getElementById(id);if(!el)return;const v=a[map[id]];if(el.type==='checkbox')el.checked=!!v;else el.value=String(v)});const o=document.getElementById('appearanceFontValue');if(o)o.textContent=(a.font||100)+'%'}
+ window.setAppearance=function(k,v){const a=read();a[k]=v;localStorage.setItem('sitwithit_appearance_v1',JSON.stringify(a));apply(a);sync()};
+ window.resetAppearance=function(){localStorage.removeItem('sitwithit_appearance_v1');apply(defaults);sync()};
+ apply(read());document.addEventListener('DOMContentLoaded',sync);setTimeout(sync,0);
 })();
 </script>
 </body>
